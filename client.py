@@ -5,9 +5,14 @@ from websockets.sync.client import connect
 def send_command(command):
     with connect("ws://localhost:8765") as websocket:
         websocket.send(command)
-        message = websocket.recv()
-        if(message): return True
+        response = websocket.recv()
+        if(response): return response
         else: return False
 
-command = input("[cmd]: ")
-send_command(command)
+def main():
+    while(True):
+        command = input("[cmd]: ")
+        response = send_command(command)
+        print(response)
+
+main()
