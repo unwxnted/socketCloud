@@ -34,6 +34,9 @@ class Client:
         data_str = json.dumps(data)
         return self.send_command(data_str)
 
+    def help_command(self):
+        print("read - retrieves a given file from the server and prints it to the terminal/nwrite - same as the read command but it executes the nano command once the file is opened in the terminal/ncommit - stores local temp file in the server")
+
     def close_connection(self):
         if self.websocket is not None:
             self.websocket.close()
@@ -51,6 +54,8 @@ class Client:
             if "write" in command:
                 response = self.send_command(command)
                 self.write_command(response, command)
+            if "help" in command:
+                self.help_command()
                 
         self.close_connection()
 

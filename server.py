@@ -11,10 +11,14 @@ class Server:
         params = command.split()
         with open(params[1], "r") as archivo:
             return archivo.read()
-    
+
+    async def add_command(self, filename):
+        file = open(filename, 'w')
+        file.close()
+
     async def commit_command(self, command):
         json_data = json.loads(command)
-        file = open(json_data["filename"], "w");
+        file = open(json_data["filename"], "w")
         file.write(json_data["data"])
         file.close()
         return "Successfully committed"
