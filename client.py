@@ -14,7 +14,7 @@ class Client:
         if self.websocket is not None:
             self.websocket.send(command)
             response = self.websocket.recv()
-            return response if response else False
+            return response if response else ""
         else:
             print("Error, no websocket connection")
 
