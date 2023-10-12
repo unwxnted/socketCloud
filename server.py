@@ -1,4 +1,5 @@
 import asyncio
+import json
 from websockets.server import serve
 
 class Server:
@@ -10,10 +11,18 @@ class Server:
         params = command.split()
         with open(params[1], "r") as archivo:
             return archivo.read()
+    
+    async def commit_command(self, command):
+        json_data = json.loads(command)
+        file = open(json_data["filename"], "w");
+        file.write(json_data["data"])
+        file.close()
+        return "Successfully committed"
 
     async def serve_command(self, command):
         if ("read" in command) or ("write" in command):
             return await self.read_command(command)
+        if("commit" in command): return await self.commit_command(command)
 
     async def echo(self, websocket, path):
         async for command in websocket:

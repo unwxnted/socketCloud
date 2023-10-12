@@ -1,5 +1,6 @@
 import os
 import asyncio
+import json
 from websockets.sync.client import connect
 
 class Client:
@@ -17,11 +18,21 @@ class Client:
         else:
             print("Error, no websocket connection")
 
-    def write_command_to_editor(self, response):
-        temp = open("temp", "w")
+    def write_command(self, response, command):
+        params = command.split()
+        temp = open("temp_" + params[1], "w")
         temp.write(response)
         temp.close()
         os.system("nano " + temp.name)
+    
+    def commit_command(self, command):
+        params = command.split()
+        file = open("temp_"+ params[1], "r")
+        content = file.read()
+        file.close()
+        data = {"command": "commit", "filename": params[1],"data": content}
+        data_str = json.dumps(data)
+        return self.send_command(data_str)
 
     def close_connection(self):
         if self.websocket is not None:
@@ -31,11 +42,15 @@ class Client:
         self.connect_to_server()
         while True:
             command = input("[cmd]: ")
-            response = self.send_command(command)
-            if "read" in command and response:
+            if "commit" in command:
+                response = self.commit_command(command)
                 print(response)
-            if "write" in command and response:
-                self.write_command_to_editor(response)
+            if "read" in command:
+                response = self.send_command(command)
+                print(response)
+            if "write" in command:
+                response = self.send_command(command)
+                self.write_command(response, command)
                 
         self.close_connection()
 
