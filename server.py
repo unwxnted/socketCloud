@@ -12,9 +12,12 @@ class Server:
         with open(params[1], "r") as archivo:
             return archivo.read()
 
-    async def add_command(self, filename):
-        file = open(filename, 'w')
-        file.close()
+    async def add_command(self, command):
+        filename = command.split()
+        filename = filename[1]
+        with open(filename, 'w') as file:
+            file.write("")
+        return "Successfully added new file"
 
     async def commit_command(self, command):
         json_data = json.loads(command)
@@ -27,6 +30,7 @@ class Server:
         if ("read" in command) or ("write" in command):
             return await self.read_command(command)
         if("commit" in command): return await self.commit_command(command)
+        if("add" in command): return await self.add_command(command)
 
     async def echo(self, websocket, path):
         async for command in websocket:
