@@ -30,12 +30,13 @@ class Client:
         file = open("temp_"+ params[1], "r")
         content = file.read()
         file.close()
+        os.remove("temp_"+ params[1])
         data = {"command": "commit", "filename": params[1],"data": content}
         data_str = json.dumps(data)
         return self.send_command(data_str)
 
     def help_command(self):
-        print("add - adds a new empty file to the server\n    example: add sola.txt\n\nread - retrieves a given file from the server and prints it to the terminal\n    example: read sola.txt\n\nwrite - same as the read command but it executes the nano command once the file is opened in the terminal\n    example: write sola.txt\n\ncommit - stores local temp file in the server\n    example: commit sola.txt\n")
+        print("add - adds a new empty file to the server\n    example: add [filename]\n\nread - retrieves a given file from the server and prints it to the terminal\n    example: read [filename]\n\nwrite - retrieves a given file from the server and open nano to write changes on the file\n    example: write [filename]\n\ncommit - push the changes from the write command to the server\n    example: commit [filename]\n")
 
     def close_connection(self):
         if self.websocket is not None:
