@@ -6,6 +6,7 @@ from websockets.sync.client import connect
 class Client:
     def __init__(self):
         self.websocket = None
+        self.last_update = {}
 
     def connect_to_server(self):
         self.websocket = connect("ws://localhost:8765")
@@ -14,12 +15,15 @@ class Client:
         if self.websocket is not None:
             self.websocket.send(command)
             response = self.websocket.recv()
+            params = command.split()
+            if(params[0] != "add"): self.last_update[params[1]] = response
             return response if response else ""
         else:
             print("Error, no websocket connection")
 
     def write_command(self, response, command):
         params = command.split()
+        self.last_update[params[1]] = response
         temp = open("temp_" + params[1], "w")
         temp.write(response)
         temp.close()
@@ -27,12 +31,15 @@ class Client:
     
     def commit_command(self, command):
         params = command.split()
+        if(not os.path.exists(params[0])): return "No changes maded to commit"
         file = open("temp_"+ params[1], "r")
         content = file.read()
         file.close()
         os.remove("temp_"+ params[1])
         data = {"command": "commit", "filename": params[1],"data": content}
         data_str = json.dumps(data)
+        if(self.last_update[params[1]] != self.send_command("read "+ params[1])):
+            return "Some changes were made during the file modification, the server file is not the same, please get the new file and try again."
         return self.send_command(data_str)
 
     def help_command(self):
