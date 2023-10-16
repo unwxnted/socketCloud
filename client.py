@@ -43,8 +43,8 @@ class Client:
             return "Some changes were made during the file modification, the server file is not the same, please get the new file and try again."
         return self.send_command(data_str)
 
-    def help_command(self):
-        print("add - adds a new empty file to the server\n    example: add [filename]\n\nread - retrieves a given file from the server and prints it to the terminal\n    example: read [filename]\n\nwrite - retrieves a given file from the server and open nano to write changes on the file\n    example: write [filename]\n\ncommit - push the changes from the write command to the server\n    example: commit [filename]\n")
+    def help_command(self, comment):
+        print(comment + "\nadd - adds a new empty file to the server\n    example: add [filename]\n\nread - retrieves a given file from the server and prints it to the terminal\n    example: read [filename]\n\nwrite - retrieves a given file from the server and open nano to write changes on the file\n    example: write [filename]\n\ncommit - push the changes from the write command to the server\n    example: commit [filename]\n")
 
     def close_connection(self):
         if self.websocket is not None:
@@ -55,11 +55,12 @@ class Client:
         while True:
             command = input("[cmd]: ")
             if "commit" in command: print(self.commit_command(command))
-            if "read" in command: print(self.send_command(command)) 
-            if "add" in command: print(self.send_command(command))
-            if "write" in command: self.write_command(self.send_command(command), command)
-            if "help" in command: self.help_command()
-            if "exit" in command: break
+            elif "read" in command: print(self.send_command(command)) 
+            elif "add" in command: print(self.send_command(command))
+            elif "write" in command: self.write_command(self.send_command(command), command)
+            elif "help" in command: self.help_command("")
+            elif "exit" in command: break
+            else: self.help_command("Command no found. Please check the commands below: ")
                 
         self.close_connection()
 
