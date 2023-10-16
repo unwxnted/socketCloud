@@ -31,7 +31,7 @@ class Client:
     
     def commit_command(self, command):
         params = command.split()
-        if(not os.path.exists(params[0])): return "No changes maded to commit"
+        if(not os.path.exists(params[1])): return "No changes maded to commit"
         file = open("temp_"+ params[1], "r")
         content = file.read()
         file.close()
