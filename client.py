@@ -22,6 +22,7 @@ class Client:
             print("Error, no websocket connection")
 
     def write_command(self, response, command):
+        if(response == "File not found"): return print("File not found") 
         params = command.split()
         self.last_update[params[1]] = response
         temp = open("temp_" + params[1], "w")
@@ -31,7 +32,7 @@ class Client:
     
     def commit_command(self, command):
         params = command.split()
-        if(not os.path.exists(params[1])): return "No changes maded to commit"
+        if(not os.path.exists("temp_" + params[1])): return "No changes maded to commit"
         file = open("temp_"+ params[1], "r")
         content = file.read()
         file.close()
@@ -58,6 +59,7 @@ class Client:
             if "add" in command: print(self.send_command(command))
             if "write" in command: self.write_command(self.send_command(command), command)
             if "help" in command: self.help_command()
+            if "exit" in command: break
                 
         self.close_connection()
 

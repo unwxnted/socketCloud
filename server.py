@@ -1,5 +1,6 @@
 import asyncio
 import json
+import os
 from websockets.server import serve
 
 class Server:
@@ -9,6 +10,7 @@ class Server:
 
     async def read_command(self, command):
         params = command.split()
+        if(not os.path.exists(params[1])): return "File not found"
         with open(params[1], "r") as archivo:
             return archivo.read()
 
