@@ -46,21 +46,33 @@ class Client:
     def help_command(self, comment):
         print(comment + "\nadd - adds a new empty file to the server\n    example: add [filename]\n\nread - retrieves a given file from the server and prints it to the terminal\n    example: read [filename]\n\nwrite - retrieves a given file from the server and open nano to write changes on the file\n    example: write [filename]\n\ncommit - push the changes from the write command to the server\n    example: commit [filename]\n")
 
+    def checker(self, command): 
+        params = command.split()
+        if len(params) > 2 or (len(params)==1 and (params[0] != "help") and (params[0] != "exit")):
+            self.help_command("Command syntax not valid, check the commands below: ")
+            return False
+        commands = ["read", "add", "commit", "write", "help", "exit"]
+        for cmd in commands:
+            if cmd == params[0]:
+                return True
+        self.help_command("Command not found. Please check the commands below: ")
+        return False
+
     def close_connection(self):
         if self.websocket is not None:
             self.websocket.close()
-
+  
     def run(self):
         self.connect_to_server()
         while True:
             command = input("[cmd]: ")
+            if not self.checker(command): continue 
             if "commit" in command: print(self.commit_command(command))
-            elif "read" in command: print(self.send_command(command)) 
-            elif "add" in command: print(self.send_command(command))
-            elif "write" in command: self.write_command(self.send_command(command), command)
-            elif "help" in command: self.help_command("")
-            elif "exit" in command: break
-            else: self.help_command("Command no found. Please check the commands below: ")
+            if "read" in command: print(self.send_command(command)) 
+            if "add" in command: print(self.send_command(command))
+            if "write" in command: self.write_command(self.send_command(command), command)
+            if "help" in command: self.help_command("")
+            if "exit" in command: break 
                 
         self.close_connection()
 
