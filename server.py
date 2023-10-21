@@ -10,20 +10,27 @@ class Server:
 
     async def read_command(self, command):
         params = command.split()
-        if(not os.path.exists(params[1])): return "File not found"
-        with open(params[1], "r") as archivo:
+        if(not os.path.exists("./server_files/"+params[1]) or "../" in params[1]): return "File not found"
+        with open("./server_files/"+params[1], "r") as archivo:
             return archivo.read()
 
     async def add_command(self, command):
         filename = command.split()
         filename = filename[1]
-        with open(filename, 'w') as file:
+        with open("./server_files/"+filename, 'w') as file:
             file.write("")
         return "Successfully added new file"
+    
+    async def list_command(self, command):
+        files = os.listdir("./server_files")
+        response = ""
+        for file in files:
+            response += file + "\n"
+        return response
 
     async def commit_command(self, command):
         json_data = json.loads(command)
-        file = open(json_data["filename"], "w")
+        file = open("./server_files/"+json_data["filename"], "w")
         file.write(json_data["data"])
         file.close()
         return "Successfully committed"
@@ -32,6 +39,7 @@ class Server:
         if ("read" in command) or ("write" in command):
             return await self.read_command(command)
         if("commit" in command): return await self.commit_command(command)
+        if("ls" in command): return await self.list_command(command)
         if("add" in command): return await self.add_command(command)
 
     async def echo(self, websocket, path):
