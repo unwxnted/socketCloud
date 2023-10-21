@@ -48,6 +48,7 @@ class Server:
             await websocket.send(response)
 
     def run(self):
+        os.path.exists("./server_files") or os.mkdir("./server_files")
         async def server_loop():
             async with serve(self.echo, self.address, self.port):
                 await asyncio.Future()
