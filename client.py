@@ -71,7 +71,12 @@ class Client:
     def run(self):
         self.connect_to_server()
         while True:
-            command = input("[cmd]: ")
+            try:
+                command = input("[cmd]: ")
+            except KeyboardInterrupt: 
+                print("\nExiting...")
+                break
+                
             if not self.checker(command): continue 
             # add the command below
             if "commit" in command: print(self.commit_command(command))
