@@ -39,13 +39,15 @@ class Client:
         os.remove("temp_"+ params[1])
         data = {"command": "commit", "filename": params[1],"data": content}
         data_str = json.dumps(data)
+        if(params[1] not in self.last_update): return self.send_command(data_str)
         if(self.last_update[params[1]] != self.send_command("read "+ params[1])):
             return "Some changes were made during the file modification, the server file is not the same, please get the new file and try again."
         return self.send_command(data_str)
 
     def readc_command(self, command):
-        filename = command.split()
-        filename = "temp_" + filename[1]
+        params = command.split()
+        filename = "temp_" + params[1]
+        if(not os.path.exists(filename) or "../" in params[1]): return "File not found"
         with open(filename, "r") as archivo:
             return archivo.read()
 
