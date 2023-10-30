@@ -52,14 +52,14 @@ class Client:
             return archivo.read()
 
     def help_command(self, comment):
-        print(comment + "\nadd - adds a new empty file to the server\n    example: add [filename]\n\nread - retrieves a given file from the server and prints it to the terminal\n    example: read [filename]\n\nwrite - retrieves a given file from the server and open nano to write changes on the file\n    example: write [filename]\n\ncommit - push the changes from the write command to the server\n    example: commit [filename]\n\nls - list existing server files\n    example: ls [filename]\n\nexit - finish the client process\n    example: exit\n\nreadc - prints a given file's temporary file\n    example: readc [filename]\n")
+        print(comment + "\nadd - adds a new empty file to the server\n    example: add [filename]\n\nmkdir - creates a new directory\n    example: mkdir [dirname]\n\nread - retrieves a given file from the server and prints it to the terminal\n    example: read [filename]\n\nwrite - retrieves a given file from the server and open nano to write changes on the file\n    example: write [filename]\n\ncommit - push the changes from the write command to the server\n    example: commit [filename]\n\nls - list existing server files\n    example: ls [filename]\n\nexit - finish the client process\n    example: exit\n\nreadc - prints a given file's temporary file\n    example: readc [filename]\n")
 
     def checker(self, command): 
         params = command.split()
         if len(params) > 2 or (len(params)==1 and (params[0] != "help") and (params[0] != "exit") and (params[0] != "ls")): # add command check here
             self.help_command("Command syntax not valid, check the commands below: ")
             return False
-        commands = ["read", "add", "commit", "write", "help", "exit", "ls", "readc"] # add the command in the list
+        commands = ["read", "add", "commit", "write", "help", "exit", "ls", "readc", "mkdir"] # add the command in the list
         for cmd in commands:
             if cmd == params[0]:
                 return True
@@ -88,8 +88,10 @@ class Client:
             if "add" in command: print(self.send_command(command))
             if "write" in command: self.write_command(self.send_command(command), command)
             if "ls" in command: print(self.send_command(command))
+            if "mkdir" in command: print(self.send_command(command))
             if "help" in command: self.help_command("")
             if "exit" in command: break 
+            
                 
         self.close_connection()
 

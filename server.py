@@ -27,6 +27,12 @@ class Server:
         for file in files:
             response += file + "\n"
         return response
+    
+    async def mkdir_command(self, command):
+        filename = command.split()
+        filename = filename[1]
+        os.makedirs("server_files/"+filename)
+        return "Succesfully created new directory"
 
     async def commit_command(self, command):
         json_data = json.loads(command)
@@ -41,6 +47,7 @@ class Server:
         if("commit" in command): return await self.commit_command(command)
         if("ls" in command): return await self.list_command(command)
         if("add" in command): return await self.add_command(command)
+        if("mkdir" in command): return await self.mkdir_command(command)
 
     async def echo(self, websocket, path):
         async for command in websocket:
