@@ -23,7 +23,7 @@ class Client:
 
     def write_command(self, response, command):
         if(response == "File not found"): return print("File not found") 
-        if(response == "Error, cannot write to a folder"): return print("Error, cannot write to a folder")
+        if(response == "Error, cannot read/write to a folder"): return print("Error, cannot write to a folder")
         params = command.split()
         self.last_update[params[1]] = response
         temp = open("temp_" + params[1].replace("/", "_"), "w")

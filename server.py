@@ -15,14 +15,17 @@ class Server:
             with open("./server_files/"+params[1], "r") as archivo:
                 return archivo.read()
         except:
-            return "Error, cannot write to a folder"
+            return "Error, cannot read/write to a folder"
 
     async def add_command(self, command):
-        filename = command.split()
-        filename = filename[1]
-        with open("./server_files/"+filename, 'w') as file:
-            file.write("")
-        return "Successfully added new file"
+        try:
+            filename = command.split()
+            filename = filename[1]
+            with open("./server_files/"+filename, 'w') as file:
+                file.write("")
+            return "Successfully added new file"
+        except:
+            return "Error, cannot add a file with the same folder name"
     
     async def list_command(self, command):
         directory = ".\\server_files"
