@@ -23,20 +23,22 @@ class Client:
 
     def write_command(self, response, command):
         if(response == "File not found"): return print("File not found") 
+        if(response == "Error, cannot write to a folder"): return print("Error, cannot write to a folder")
         params = command.split()
         self.last_update[params[1]] = response
-        temp = open("temp_" + params[1], "w")
+        temp = open("temp_" + params[1].replace("/", "_"), "w")
         temp.write(response)
         temp.close()
         os.system("nano " + temp.name)
     
     def commit_command(self, command):
         params = command.split()
-        if(not os.path.exists("temp_" + params[1])): return "No changes maded to commit"
-        file = open("temp_"+ params[1], "r")
+        name_parsed = params[1].replace("/", "_")
+        if(not os.path.exists("temp_" + name_parsed)): return "No changes maded to commit"
+        file = open("temp_"+ name_parsed, "r")
         content = file.read()
         file.close()
-        os.remove("temp_"+ params[1])
+        os.remove("temp_"+ name_parsed)
         data = {"command": "commit", "filename": params[1],"data": content}
         data_str = json.dumps(data)
         if(params[1] not in self.last_update): return self.send_command(data_str)
@@ -52,7 +54,7 @@ class Client:
             return archivo.read()
 
     def help_command(self, comment):
-        print(comment + "\nadd - adds a new empty file to the server\n    example: add [filename]\n\nmkdir - creates a new directory\n    example: mkdir [dirname]\n\nread - retrieves a given file from the server and prints it to the terminal\n    example: read [filename]\n\nwrite - retrieves a given file from the server and open nano to write changes on the file\n    example: write [filename]\n\ncommit - push the changes from the write command to the server\n    example: commit [filename]\n\nls - list existing server files\n    example: ls [filename]\n\nexit - finish the client process\n    example: exit\n\nreadc - prints a given file's temporary file\n    example: readc [filename]\n")
+        print(comment + "\nadd - adds a new empty file to the server\n    example: add [filename]\n\nmkdir - creates a new directory\n    example: mkdir [dirname]\n\nread - retrieves a given file from the server and prints it to the terminal\n    example: read [filename]\n\nreadc - prints a given file's temporary file\n    example: readc [filename]\n\nwrite - retrieves a given file from the server and open nano to write changes on the file\n    example: write [filename]\n\ncommit - push the changes from the write command to the server\n    example: commit [filename]\n\nls - list existing server files\n    example: ls [filename]\n\nexit - finish the client process\n    example: exit\n\n")
 
     def checker(self, command): 
         params = command.split()

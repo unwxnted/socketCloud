@@ -9,10 +9,13 @@ class Server:
         self.port = 8765
 
     async def read_command(self, command):
-        params = command.split()
-        if(not os.path.exists("./server_files/"+params[1]) or "../" in params[1]): return "File not found"
-        with open("./server_files/"+params[1], "r") as archivo:
-            return archivo.read()
+        try:
+            params = command.split()
+            if(not os.path.exists("./server_files/"+params[1]) or "../" in params[1]): return "File not found"
+            with open("./server_files/"+params[1], "r") as archivo:
+                return archivo.read()
+        except:
+            return "Error, cannot write to a folder"
 
     async def add_command(self, command):
         filename = command.split()
@@ -22,10 +25,27 @@ class Server:
         return "Successfully added new file"
     
     async def list_command(self, command):
-        files = os.listdir("./server_files")
+        directory = ".\\server_files"
         response = ""
-        for file in files:
-            response += file + "\n"
+        stack = []
+
+        for item in os.listdir(directory):
+            item_path = os.path.join(directory, item)
+            if os.path.isdir(item_path):
+                stack.append(item)
+            else:
+                response += f"File: {item}\n"
+
+        while stack:
+            item = stack.pop()
+            response += f"Folder: {item}\n"
+            folder_path = os.path.join(directory, item)
+            for file_item in os.listdir(folder_path):
+                file_path = os.path.join(folder_path, file_item)
+                if os.path.isdir(file_path):
+                    stack.append(os.path.join(item, file_item))
+                else:
+                    response += f"  File: {file_item}\n"
         return response
     
     async def mkdir_command(self, command):
