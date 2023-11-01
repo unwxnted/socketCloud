@@ -48,7 +48,7 @@ class Client:
 
     def readc_command(self, command):
         params = command.split()
-        filename = "temp_" + params[1]
+        filename = "temp_" + params[1].replace("/", "_")
         if(not os.path.exists(filename) or "../" in params[1]): return "File not found"
         with open(filename, "r") as archivo:
             return archivo.read()
