@@ -64,4 +64,4 @@ First of all intall python 3.12.0 forward, then clone the repository and run the
 - Mendez Pricila - @mendezprisci
 - Marcozzi Lucio - @Gvmbler
 - Oteiza Santiago - @l0l0C1337
-- Buera Jazmin
+- Buera Jazmin - @buerajaaz
