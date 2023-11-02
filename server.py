@@ -65,12 +65,13 @@ class Server:
         return "Successfully committed"
 
     async def serve_command(self, command):
-        if ("read" in command) or ("write" in command):
+        cmd = command.split()[0]
+        if ("read" in cmd) or ("write" in cmd):
             return await self.read_command(command)
-        if("commit" in command): return await self.commit_command(command)
-        if("ls" in command): return await self.list_command(command)
-        if("add" in command): return await self.add_command(command)
-        if("mkdir" in command): return await self.mkdir_command(command)
+        if("commit" in command.split(",")[0] and "," in command): return await self.commit_command(command)
+        if("ls" in cmd): return await self.list_command(command)
+        if("add" in cmd): return await self.add_command(command)
+        if("mkdir" in cmd): return await self.mkdir_command(command)
 
     async def echo(self, websocket, path):
         async for command in websocket:
@@ -78,12 +79,15 @@ class Server:
             await websocket.send(response)
 
     def run(self):
-        os.path.exists("./server_files") or os.mkdir("./server_files")
-        async def server_loop():
-            async with serve(self.echo, self.address, self.port):
-                await asyncio.Future()
+        try:
+            os.path.exists("./server_files") or os.mkdir("./server_files")
+            async def server_loop():
+                async with serve(self.echo, self.address, self.port):
+                    await asyncio.Future()
 
-        asyncio.run(server_loop())
+            asyncio.run(server_loop())
+        except:
+            print("\nExiting...")
 
 if __name__ == "__main__":
     sv = Server()
