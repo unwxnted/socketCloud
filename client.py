@@ -83,16 +83,17 @@ class Client:
                 
             if not self.checker(command): continue 
             # add the command below
-            if "commit" in command: print(self.commit_command(command))
-            if "readc" in command: print(self.readc_command(command))
+            cmd = command.split()[0]
+            if "commit" in cmd: print(self.commit_command(command))
+            if "readc" in cmd: print(self.readc_command(command))
             else: 
-                if "read" in command: print(self.send_command(command))
-            if "add" in command: print(self.send_command(command))
-            if "write" in command: self.write_command(self.send_command(command), command)
-            if "ls" in command: print(self.send_command(command))
-            if "mkdir" in command: print(self.send_command(command))
-            if "help" in command: self.help_command("")
-            if "exit" in command: break 
+                if "read" in cmd: print(self.send_command(command))
+            if "add" in cmd: print(self.send_command(command))
+            if "write" in cmd: self.write_command(self.send_command(command), command)
+            if "ls" in cmd: print(self.send_command(command))
+            if "mkdir" in cmd: print(self.send_command(command))
+            if "help" in cmd: self.help_command("")
+            if "exit" in cmd: break 
             
                 
         self.close_connection()
